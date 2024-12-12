@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { Webhook } from "svix";
 import { User } from "../models/Schema";
+import { MongooseError } from "mongoose";
 
 const router = Router();
 
@@ -62,8 +63,13 @@ router.all("/", async (req: Request, res: Response, next: NextFunction) => {
       clerkId: evt.data.id,
       username: evt.data.username,
     });
-  } catch (error) {
-    if (error instanceof Error) {
+  } catch (error: any) {
+    if (error.code === 11000) {
+      return void res.json({
+        success: true,
+        message: "Username already exists. Database not modified",
+      });
+    } else if (error instanceof Error) {
       console.error(
         "Error: Could not add created Clerk user to MongoDB: ",
         error.message
