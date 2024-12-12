@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { Webhook } from "svix";
 import { User } from "../models/Schema";
-import { MongooseError } from "mongoose";
 
 const router = Router();
 
