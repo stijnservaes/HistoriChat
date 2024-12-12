@@ -1,5 +1,5 @@
 import { Server, Socket } from "socket.io";
-import {chatMessage} from "../controller/openaiController"
+import {chatMessage} from "../controllers/openaiController"
 
 export default (io: Server) => {
   io.on("connection", (socket: Socket) => {
