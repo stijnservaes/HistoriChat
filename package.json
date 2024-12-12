@@ -19,7 +19,8 @@
     "mongoose": "^8.8.4",
     "morgan": "^1.10.0",
     "openai": "^4.76.1",
-    "socket.io": "^4.8.1"
+    "socket.io": "^4.8.1",
+    "svix": "^1.43.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",

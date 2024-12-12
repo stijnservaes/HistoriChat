@@ -2,7 +2,9 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true, minlength: 5 },
-  dailyInvocations: { type: Number, required: true },
+  clerkId: { type: String, required: true },
+  dailyInvocations: { type: Number, required: true, default: 0 },
+  maxAllowedInvocations: { type: Number, required: true, default: 20 },
 });
 
 const messageSchema = new mongoose.Schema(
@@ -15,5 +17,3 @@ const messageSchema = new mongoose.Schema(
 
 export const User = mongoose.model("User", userSchema);
 export const Message = mongoose.model("Message", messageSchema);
-
-
