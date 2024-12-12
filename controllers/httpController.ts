@@ -1,3 +1,4 @@
+import { getAuth } from "@clerk/express";
 import { NextFunction, Request, Response } from "express";
 
 
@@ -18,6 +19,12 @@ export const chatRooms = [
 
 
 export async function retrieveRooms(req: Request, res: Response, next: NextFunction) {
-  console.log("should see")
-  res.json(chatRooms)
+  const auth = getAuth(req)
+
+  if (!auth.userId) {
+    res.status(401).json({success: false, message: "Unauthorized access."})
+    return;
+  }
+
+  res.json({success: true, message: chatRooms})
 }
