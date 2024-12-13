@@ -15,7 +15,7 @@ dotenv.config();
 const PORT = process.env.PORT || 3001;
 const app = express();
 const httpServer = createServer(app);
-const io = new Server(httpServer, { cors: { origin: "*" } });
+const io = new Server(httpServer, { cors: { origin: ["http://localhost:3000", "https://histori-chat-next-js.vercel.app/"] }, transports: ["websocket"] });
 
 app.get("/ping", (req, res) => void res.json({success: true, message: "Pinged"}))
 
