@@ -17,6 +17,8 @@ const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, { cors: { origin: "*" } });
 
+app.get("/ping", (req, res) => void res.json({success: true, message: "Pinged"}))
+
 app.use(clerkMiddleware());
 app.use(express.json());
 app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
