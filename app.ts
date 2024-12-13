@@ -8,6 +8,7 @@ import mongoose from "mongoose";
 import { clerkMiddleware } from "@clerk/express";
 import httpRoutes from "./routes/httpRoutes";
 import webhookRoutes from "./routes/webhook";
+import { checkAuth } from "./lib/clerkSocket";
 
 dotenv.config();
 
@@ -25,6 +26,8 @@ mongoose
   .then(() => console.log("Connected to DB"))
   .catch((err) => console.error("Error connecting to db: ", err));
 
+
+io.use(checkAuth)
 webSocketSetup(io);
 
 app.use("/rooms", httpRoutes);

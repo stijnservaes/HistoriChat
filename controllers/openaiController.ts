@@ -43,6 +43,7 @@ export async function chatMessage(io: Server, socket: Socket) {
       return socket.emit("joinroom", {
         success: true,
         message: `User has joined room ${roomId}.`,
+        roomId: roomId
       });
     } else {
       return socket.emit("error", {
