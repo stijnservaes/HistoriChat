@@ -1,10 +1,13 @@
 import Openai from "openai";
 import dotenv from "dotenv";
+import { chatRooms } from "../lib/rooms";
 dotenv.config();
 
 const openai = new Openai({ apiKey: process.env.OPENAI_API_KEY });
 
-export async function generateAI(message: string): Promise<string> {
+export async function generateAI(message: string, roomId: number): Promise<string> {
+  const style = chatRooms.find((room) => room.id === roomId)?.name
+
   try {
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
@@ -13,11 +16,11 @@ export async function generateAI(message: string): Promise<string> {
         {
           role: "system",
           content:
-            "You are an expert in translation modern English text into Shakespearean style",
+            `You are an expert in translation modern English text into ${style} style.`,
         },
         {
           role: "user",
-          content: `Transform the following into Shakespearean style: ${message}`,
+          content: `Transform the following into ${style} style: ${message}.`,
         },
       ],
     });

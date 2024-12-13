@@ -11,6 +11,7 @@ const messageSchema = new mongoose.Schema(
   {
     message: { type: String, required: true },
     byUser: { type: String, required: true },
+    roomId: { type: Number, required: true },
   },
   { timestamps: true }
 );

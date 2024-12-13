@@ -1,5 +1,7 @@
 import { Server, Socket } from "socket.io";
 import { roomExists } from "../lib/rooms";
+import { Message, User } from "../models/Schema";
+import { generateAI } from "../services/openai";
 
 export async function chatMessage(io: Server, socket: Socket) {
   socket.on("chat", async ({ roomId, message }) => {
@@ -18,10 +20,34 @@ export async function chatMessage(io: Server, socket: Socket) {
       });
     }
 
+    const user = await User.findOne({username: socket.user.username})
+
+    if (!user) {
+      return socket.emit("error", { success: false, message: "No user found in MongoDB"})
+    }
+
+    if (user.dailyInvocations > user.maxAllowedInvocations) {
+      return socket.emit("no_tokens", "User has exceeded their allowed tokens per day.")
+    }
+
+    const generatedMessage = await generateAI(message, roomId)
+
+    const newMessage = await Message.create({
+      message: generatedMessage,
+      byUser: socket.user.username,
+      roomId: roomId,
+    });
+
+   
+    await User.updateOne({username: socket.user.username}, {$inc: {dailyInvocations: 1}})
+
     if (socket.rooms.has(roomId.toString()) && exists) {
       return io
         .to(roomId.toString())
-        .emit("chat", { success: true, message: message });
+        .emit("chat", {
+          success: true,
+          message: newMessage,
+        });
     } else {
       return socket.emit("error", {
         success: false,
@@ -43,7 +69,6 @@ export async function chatMessage(io: Server, socket: Socket) {
       return socket.emit("joinroom", {
         success: true,
         message: `User has joined room ${roomId}.`,
-        roomId: roomId
       });
     } else {
       return socket.emit("error", {
