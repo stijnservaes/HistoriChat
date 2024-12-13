@@ -8,7 +8,7 @@ export async function checkAuth(
 ) {
   try {
     const token = socket.handshake.auth.token;
-    const permittedOrigins = ["http://localhost:3000","https://histori-chat-next-js.vercel.app/"];
+    const permittedOrigins = ["http://localhost:3000","https://histori-chat-next-js.vercel.app"];
     if (!token) {
       return void next(new Error("Authentication token is missing"));
     }
