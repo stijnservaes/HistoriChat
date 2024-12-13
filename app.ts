@@ -9,6 +9,8 @@ import { clerkMiddleware } from "@clerk/express";
 import httpRoutes from "./routes/httpRoutes";
 import webhookRoutes from "./routes/webhook";
 import { checkAuth } from "./lib/clerkSocket";
+import cron from 'node-cron'
+import { User } from "./models/Schema";
 
 dotenv.config();
 
@@ -39,3 +41,13 @@ app.use("/api/webhooks", webhookRoutes);
 httpServer.listen(PORT, () => {
   console.log("Listening on port ", PORT);
 });
+
+cron.schedule("0 0 * * *", async () => {
+  try {
+    console.log("Running daily reset task...")
+    const result = await User.updateMany({}, {dailyInvocations: 0})
+    console.log(`Reset ${result.modifiedCount} users`)
+  } catch (err) {
+    console.error("Error when executing daily reset task", err)
+  }
+})
